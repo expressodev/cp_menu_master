@@ -76,7 +76,7 @@ class Cp_menu_master_acc
 				}
 				else
 				{
-					$content_edit[$title] = str_ireplace('C=content_publish&amp;M=entry_form', 'C=content_edit', $link);
+					$content_edit['xxCPMMxx_'.$title] = str_ireplace('C=content_publish&amp;M=entry_form', 'C=content_edit', $link);
 				}
 			}
 			
@@ -101,10 +101,8 @@ class Cp_menu_master_acc
 		$menu_string .= $this->EE->menu->_process_menu(array('help' => $this->EE->menu->generate_help_link()));
 		$menu_string .= $this->EE->menu->_process_menu($this->EE->menu->_fetch_site_list(), 0, FALSE, 'msm_sites');
 		
-		// I feel dirty writing this code, but EE forces 'nav_' in front of the menu items
-		// when it tries to run them through lang(), and it is hardcoded to only ignore
-		// the 'publish' menu *head in hands*
-		$menu_string = preg_replace('/(href\=\"[^\"]+C\=content_edit[^\"]+\"[^\>]*\>)nav_([^\<]*)\<\\/a\>/i', '$1$2', $menu_string);
+		// stupid EE prepends 'nav_' in front of menu items when it tries to localize them
+		$menu_string = str_replace('nav_xxCPMMxx_', '', $menu_string);
 		
 		// save our new menu html
 		$this->EE->load->vars('menu_string', $menu_string);
