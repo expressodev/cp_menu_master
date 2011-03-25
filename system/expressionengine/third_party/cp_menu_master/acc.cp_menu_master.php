@@ -28,7 +28,7 @@ class Cp_menu_master_acc
 {
 	public $name;
 	public $description;
-	public $version = '1.0.0';
+	public $version = '1.0.1';
 	public $id = 'cp_menu_master';
 	public $sections = array();
 

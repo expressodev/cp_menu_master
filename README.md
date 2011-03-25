@@ -12,6 +12,10 @@ can still publish to those channels by accessing the correct URL.
 Changelog
 --------
 
+**1.0.1** *(2011-03-25)*
+
+* Added ability to hide channels from the edit menu independently of the publish menu
+
 **1.0.0** *(2011-03-16)*
 
 * Initial release
