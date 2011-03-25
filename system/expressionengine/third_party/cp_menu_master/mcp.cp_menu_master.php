@@ -30,6 +30,7 @@ class Cp_menu_master_mcp {
 	{
 		$this->EE =& get_instance();
 		$this->ACC = $this->_get_acc_instance();
+		$this->EE->load->library('table');
 	}
 
 	public function index()

@@ -67,19 +67,25 @@ class Cp_menu_master_acc
 		if (isset($menu['content']['publish']) AND is_array($menu['content']['publish']))
 		{
 			$content_edit = array();
+
 			foreach ($menu['content']['publish'] as $title => $link)
 			{
 				$channel_id = (int)substr($link, stripos($link, 'channel_id=')+11);
+
+				// remove the channel from publish menu if necessary
 				if (in_array($channel_id, $settings['hidden_channels']))
 				{
 					unset($menu['content']['publish'][$title]);
 				}
-				else
+
+				// add channel to edit menu if necessary
+				if ( ! in_array($channel_id, $settings['hidden_edit']))
 				{
 					$content_edit['xxCPMMxx_'.$title] = str_ireplace('C=content_publish&amp;M=entry_form', 'C=content_edit', $link);
 				}
 			}
 
+			// display publish menu
 			if (empty($menu['content']['publish']))
 			{
 				unset($menu['content']['publish']);
@@ -89,9 +95,21 @@ class Cp_menu_master_acc
 				$menu['content']['publish'] = reset($menu['content']['publish']);
 			}
 
-			if ( ! empty($settings['edit_submenu']) AND count($content_edit) > 1)
+			// display edit menu
+			if ( ! empty($settings['edit_submenu']))
 			{
-				$menu['content']['edit'] = $content_edit;
+				if (empty($content_edit))
+				{
+					unset($menu['content']['edit']);
+				}
+				elseif (count($content_edit) == 1)
+				{
+					$menu['content']['edit'] = reset($content_edit);
+				}
+				else
+				{
+					$menu['content']['edit'] = $content_edit;
+				}
 			}
 		}
 
@@ -143,6 +161,11 @@ class Cp_menu_master_acc
 		if (empty($settings['hidden_channels']) OR ! is_array($settings['hidden_channels']))
 		{
 			$settings['hidden_channels'] = array();
+		}
+
+		if (empty($settings['hidden_edit']) OR ! is_array($settings['hidden_edit']))
+		{
+			$settings['hidden_edit'] = array();
 		}
 
 		return $settings;
