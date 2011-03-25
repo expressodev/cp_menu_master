@@ -19,14 +19,14 @@
 	<?php if (empty($channels)): ?>
 		<p><em><?= lang('no_publish_channels') ?></em></p>
 	<?php endif; ?>
-	
+
 	<?php foreach ($channels as $channel_id => $channel_title): ?>
 		<p><label>
 			<?= form_checkbox('settings[hidden_channels][]', $channel_id, in_array($channel_id, $settings['hidden_channels'])) ?>
 			<?= $channel_title ?>
 		</label></p>
 	<?php endforeach; ?>
-	
+
 </fieldset>
 
 <br />
