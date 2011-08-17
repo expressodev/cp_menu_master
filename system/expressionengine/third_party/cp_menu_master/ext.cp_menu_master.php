@@ -27,7 +27,7 @@
 class Cp_menu_master_ext
 {
 	public $name = 'CP Menu Master';
-	public $version = '2.0.0';
+	public $version = '2.1';
 	public $settings_exist = 'y';
 	public $docs_url = 'http://github.com/crescendo/cp_menu_master';
 
@@ -73,16 +73,11 @@ class Cp_menu_master_ext
 
 	public function update_extension($current = '')
 	{
-		if ($current == '' OR $current == $this->version)
-		{
-			return FALSE;
-		}
-		else
-		{
-			$this->EE->db->where('class', __CLASS__);
-			$this->EE->db->update('extensions', array('version' => $this->version));
-			return TRUE;
-		}
+		if ($current == $this->version) return FALSE;
+
+		$this->EE->db->where('class', __CLASS__);
+		$this->EE->db->update('extensions', array('version' => $this->version));
+		return TRUE;
 	}
 
 	public function settings_form()
@@ -206,10 +201,12 @@ class Cp_menu_master_ext
 			}
 		}
 
+		$extra_css = '';
+
 		// do we want to show CP menus on hover instead of click?
 		if ( ! empty($settings['hover_menus']))
 		{
-			$this->EE->cp->add_to_head('<style type="text/css">
+			$extra_css .= '
 				#navigationTabs li.parent:hover ul,
 				#navigationTabs li.parent:hover li:hover ul,
 				#navigationTabs li.parent:hover li:hover ul li:hover ul,
@@ -222,7 +219,21 @@ class Cp_menu_master_ext
 				#navigationTabs li.parent:hover li:hover ul li:hover ul ul {
 					display: none;
 				}
-			</style>');
+			';
+		}
+
+		// do we want to hide the "Filter by Channel" drop-down?
+		if ( ! empty($settings['hide_filter_by_channel']))
+		{
+			$extra_css .= '
+				#filterMenu #f_channel_id { display: none; }
+				#filterMenu #f_cat_id { margin-left: -0.85em; }
+			';
+		}
+
+		if ( ! empty($extra_css))
+		{
+			$this->EE->cp->add_to_head('<style type="text/css">'.$extra_css.'</style>');
 		}
 
 		return $menu;

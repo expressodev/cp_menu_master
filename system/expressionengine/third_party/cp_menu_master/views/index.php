@@ -10,6 +10,10 @@
 		<?= form_checkbox('settings[hover_menus]', 'y', ! empty($settings['hover_menus'])) ?>
 		<?= lang('display_menus_on_hover') ?>
 	</label></p>
+	<p><label>
+		<?= form_checkbox('settings[hide_filter_by_channel]', 'y', ! empty($settings['hide_filter_by_channel'])) ?>
+		<?= lang('hide_filter_by_channel') ?>
+	</label></p>
 </fieldset>
 
 <br />
