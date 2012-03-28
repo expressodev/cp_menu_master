@@ -27,13 +27,30 @@
 class Cp_menu_master_ext
 {
 	public $name = 'CP Menu Master';
-	public $version = '2.1';
+	public $version = '2.2.0';
+	public $settings;
 	public $settings_exist = 'y';
-	public $docs_url = 'http://github.com/crescendo/cp_menu_master';
+	public $docs_url = 'http://github.com/expressodev/cp_menu_master';
 
-	public function __construct()
+	public function __construct($settings = array())
 	{
 		$this->EE =& get_instance();
+		$this->initialize($settings);
+	}
+
+	public function initialize($settings)
+	{
+		if (empty($settings['hidden_channels']) OR ! is_array($settings['hidden_channels']))
+		{
+			$settings['hidden_channels'] = array();
+		}
+
+		if (empty($settings['hidden_edit']) OR ! is_array($settings['hidden_edit']))
+		{
+			$settings['hidden_edit'] = array();
+		}
+
+		$this->settings = $settings;
 	}
 
 	public function activate_extension()
@@ -80,11 +97,13 @@ class Cp_menu_master_ext
 		return TRUE;
 	}
 
-	public function settings_form()
+	public function settings_form($settings)
 	{
+		$this->initialize($settings);
+
 		$data = array(
 			'post_url' => 'C=addons_extensions'.AMP.'M=save_extension_settings'.AMP.'file=cp_menu_master',
-			'settings' => $this->_load_settings()
+			'settings' => $this->settings,
 		);
 
 		// get channel list
@@ -114,97 +133,29 @@ class Cp_menu_master_ext
 	}
 
 	/**
-	 * Why isn't this built in?
-	 */
-	private function _load_settings()
-	{
-		$this->EE->db->where('class', __CLASS__);
-		$row = $this->EE->db->get('extensions')->row();
-		if (empty($row->settings)) $settings = array();
-		else $settings = unserialize($row->settings);
-
-		if (empty($settings['hidden_channels']) OR ! is_array($settings['hidden_channels']))
-		{
-			$settings['hidden_channels'] = array();
-		}
-
-		if (empty($settings['hidden_edit']) OR ! is_array($settings['hidden_edit']))
-		{
-			$settings['hidden_edit'] = array();
-		}
-
-		return $settings;
-	}
-
-	/**
 	 * CP Menu Array extension function
 	 *
 	 * Called by EE right before the top menu is generated, so we can edit it.
 	 */
 	public function cp_menu_array($menu)
 	{
-		$settings = $this->_load_settings();
-
-		if (empty($settings['hidden_channels']) OR ! is_array($settings['hidden_channels']))
+		// alter the menu as per settings
+		if (isset($menu['content']['publish']))
 		{
-			$settings['hidden_channels'] = array();
+			$menu['content']['publish'] = $this->_remove_hidden_channels($menu['content']['publish'], $this->settings['hidden_channels']);
+			if (empty($menu['content']['publish'])) unset($menu['content']['publish']);
 		}
 
-		// alter the menu as per settings
-		if (isset($menu['content']['publish']) AND is_array($menu['content']['publish']))
+		if (isset($menu['content']['edit']))
 		{
-			$content_edit = array();
-
-			foreach ($menu['content']['publish'] as $title => $link)
-			{
-				$channel_id = (int)substr($link, stripos($link, 'channel_id=')+11);
-
-				// remove the channel from publish menu if necessary
-				if (in_array($channel_id, $settings['hidden_channels']))
-				{
-					unset($menu['content']['publish'][$title]);
-				}
-
-				// add channel to edit menu if necessary
-				if ( ! in_array($channel_id, $settings['hidden_edit']))
-				{
-					$content_edit['cpmm_'.$title] = str_ireplace('C=content_publish&amp;M=entry_form', 'C=content_edit', $link);
-					$this->EE->lang->language['nav_cpmm_'.$title] = $title;
-				}
-			}
-
-			// display publish menu
-			if (empty($menu['content']['publish']))
-			{
-				unset($menu['content']['publish']);
-			}
-			elseif (count($menu['content']['publish']) == 1)
-			{
-				$menu['content']['publish'] = reset($menu['content']['publish']);
-			}
-
-			// display edit menu
-			if ( ! empty($settings['edit_submenu']))
-			{
-				if (empty($content_edit))
-				{
-					unset($menu['content']['edit']);
-				}
-				elseif (count($content_edit) == 1)
-				{
-					$menu['content']['edit'] = reset($content_edit);
-				}
-				else
-				{
-					$menu['content']['edit'] = $content_edit;
-				}
-			}
+			$menu['content']['edit'] = $this->_remove_hidden_channels($menu['content']['edit'], $this->settings['hidden_edit']);
+			if (empty($menu['content']['edit'])) unset($menu['content']['edit']);
 		}
 
 		$extra_css = '';
 
 		// do we want to show CP menus on hover instead of click?
-		if ( ! empty($settings['hover_menus']))
+		if ( ! empty($this->settings['hover_menus']))
 		{
 			$extra_css .= '
 				#navigationTabs li.parent:hover ul,
@@ -223,7 +174,7 @@ class Cp_menu_master_ext
 		}
 
 		// do we want to hide the "Filter by Channel" drop-down?
-		if ( ! empty($settings['hide_filter_by_channel']))
+		if ( ! empty($this->settings['hide_filter_by_channel']))
 		{
 			$extra_css .= '
 				#filterMenu #f_channel_id { display: none; }
@@ -234,6 +185,34 @@ class Cp_menu_master_ext
 		if ( ! empty($extra_css))
 		{
 			$this->EE->cp->add_to_head('<style type="text/css">'.$extra_css.'</style>');
+		}
+
+		return $menu;
+	}
+
+	protected function _remove_hidden_channels($menu, $hidden_channel_ids)
+	{
+		if (empty($menu)) return NULL;
+		if ( ! is_array($menu)) return $menu;
+
+		// remove any hidden channels
+		foreach ($menu as $key => $url)
+		{
+			$channel_id = (int)substr($url, stripos($url, 'channel_id=') + 11);
+			if (in_array($channel_id, $hidden_channel_ids))
+			{
+				unset($menu[$key]);
+			}
+		}
+
+		// tidy up menu
+		if (empty($menu))
+		{
+			return NULL;
+		}
+		elseif (count($menu) == 1)
+		{
+			return reset($menu);
 		}
 
 		return $menu;

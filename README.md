@@ -2,8 +2,8 @@ CP Menu Master
 ==============
 
 Take control of your control panel menus! CP Menu Master allows you to hide channels from the
-publish menu for ALL users, show channels as a sub-menu in the edit menu, and even display
-control panel menus on mouse-over instead of click. Think of all those seconds you will save!
+publish and edit menus for ALL users, and display control panel menus on mouse-over instead of
+click. Think of all those seconds you will save!
 
 Please note: This extension does not enforce any kind of security to prevent users publishing
 to channels. It simply removes links from the publish menu, to reduce clutter. Smart users
@@ -25,14 +25,27 @@ required. Your pre-2.0 module settings will be migrated to the new version.
 Changelog
 ---------
 
-**2.0.0** *(2011-06-07)*
+### 2.2.0
+*March 28, 2012*
+
+* Removed "Display Content > Edit as a submenu" option to support EE 2.4+
+
+### 2.1.0
+*August 18, 2011*
+
+* Added "Hide Filter by Channel on Edit Channel Entries page" option
+
+### 2.0.0
+*June 7, 2011*
 
 * Rewritten as an extension to take advantage of new menu hook in EE 2.1.5+
 
-**1.0.1** *(2011-03-25)*
+### 1.0.1
+*March 25, 2011*
 
 * Added ability to hide channels from the edit menu independently of the publish menu
 
-**1.0.0** *(2011-03-16)*
+### 1.0.0
+*March 16, 2011*
 
 * Initial release

@@ -3,10 +3,6 @@
 <fieldset>
 	<legend><?= lang('cp_menu_options') ?></legend>
 	<p><label>
-		<?= form_checkbox('settings[edit_submenu]', 'y', ! empty($settings['edit_submenu']), 'id="settings_edit_submenu"') ?>
-		<?= lang('display_content_edit_submenu') ?>
-	</label></p>
-	<p><label>
 		<?= form_checkbox('settings[hover_menus]', 'y', ! empty($settings['hover_menus'])) ?>
 		<?= lang('display_menus_on_hover') ?>
 	</label></p>
