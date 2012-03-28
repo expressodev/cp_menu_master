@@ -9,18 +9,29 @@ Please note: This extension does not enforce any kind of security to prevent use
 to channels. It simply removes links from the publish menu, to reduce clutter. Smart users
 can still publish to those channels by accessing the correct URL.
 
+Requirements
+------------
+
+* ExpressionEngine 2.1.5+
+
+Installation
+------------
+
+1. Copy the entire `cp_menu_master` folder to `/system/expressionengine/third_party` on your server.
+2. Enable the extension under Add-ons > Extensions in your ExpressionEngine control panel.
+
+Updating
+--------
+
+When upgrading from a pre-2.0 release, please make sure you replace the entire ``cp_menu_master``
+directory, and not simply merge the contents. The old acc, mcp, and upd files are no longer
+required. Your pre-2.0 module settings will be migrated to the new version.
+
 Configuration
 -------------
 
 Configuration options for this extension can be found under Add-Ons > Extensions in your
 ExpressionEngine control panel. Settings apply to all users, even super admins.
-
-Updating
---------
-
-When upgrading from a pre-2.0 release, please make sure you replace the entire cp_menu_master
-directory, and not simply merge the contents. The old acc, mcp, and upd files are no longer
-required. Your pre-2.0 module settings will be migrated to the new version.
 
 Changelog
 ---------
