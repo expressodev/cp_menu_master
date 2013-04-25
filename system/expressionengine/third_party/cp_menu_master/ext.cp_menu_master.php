@@ -139,6 +139,12 @@ class Cp_menu_master_ext
 	 */
 	public function cp_menu_array($menu)
 	{
+		// in case other extensions use this hook
+		if ($this->EE->extensions->last_call !== FALSE)
+		{
+			$menu = $this->EE->extensions->last_call;
+		}
+
 		// alter the menu as per settings
 		if (isset($menu['content']['publish']))
 		{
