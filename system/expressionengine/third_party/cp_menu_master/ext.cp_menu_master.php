@@ -27,7 +27,7 @@
 class Cp_menu_master_ext
 {
 	public $name = 'CP Menu Master';
-	public $version = '2.2.0';
+	public $version = '2.2.1';
 	public $settings;
 	public $settings_exist = 'y';
 	public $docs_url = 'http://github.com/expressodev/cp_menu_master';
@@ -108,6 +108,7 @@ class Cp_menu_master_ext
 
 		// get channel list
 		$data['channels'] = array();
+		$this->EE->load->model('channel_model');
 		$channels_query = $this->EE->channel_model->get_channels()->result();
 		foreach ($channels_query as $channel)
 		{

@@ -36,6 +36,11 @@ ExpressionEngine control panel. Settings apply to all users, even super admins.
 Changelog
 ---------
 
+### 2.2.1
+*May 29, 2013*
+
+* ExpressionEngine 2.6 compatibility
+
 ### 2.2.0
 *March 28, 2012*
 
